@@ -34,7 +34,7 @@ export async function POST(req) {
   const crypter = new Cryptr(process.env.SECRET_KEY);
   const encryptedEmail = crypter.encrypt(findUser.email);
 
-  const url = `${process.env.APP_URL}/auth/reset-password/${encryptedEmail}?signature=${randomString}`;
+  const url = `${process.env.APP_URL}/reset-password/${encryptedEmail}?signature=${randomString}`;
 
   console.log("🚀 ~ file: route.js:44 ~ POST ~ url:", url);
   try {

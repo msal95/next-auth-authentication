@@ -4,9 +4,6 @@ import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
 import cryptoRandomString from "crypto-random-string";
 import Cryptr from "cryptr";
-import { render } from "@react-email/render";
-import ForgotPasswordEmail from "@/emails/ForgotPasswordEmail";
-import { sendEmail } from "@/config/mail";
 
 export async function POST(req) {
   try {
@@ -70,7 +67,7 @@ export async function POST(req) {
 
     // Send Email to User
     const emailSend = await sendEmail(
-      response.email,
+      payload.email,
       "Verification Email",
       html
     );

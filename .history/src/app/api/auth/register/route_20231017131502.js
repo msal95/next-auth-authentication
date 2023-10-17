@@ -4,9 +4,6 @@ import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
 import cryptoRandomString from "crypto-random-string";
 import Cryptr from "cryptr";
-import { render } from "@react-email/render";
-import ForgotPasswordEmail from "@/emails/ForgotPasswordEmail";
-import { sendEmail } from "@/config/mail";
 
 export async function POST(req) {
   try {
@@ -33,27 +30,17 @@ export async function POST(req) {
       );
     }
 
-    const response = await User.create({
-      fullName: name,
-      userName,
-      email,
-      password: hashedPassword,
-    });
-
     //   Generate a random String
     const randomString = cryptoRandomString({
       length: 64,
       type: "alphanumeric",
     });
-    console.log("🚀 ~ file: route.js:38 ~ POST ~ randomString:", randomString);
 
-    response.verifyToken = randomString;
-
-    await response.save();
+    existingUser.verifyToken = randomString;
 
     //   Encrypt User Email
     const crypter = new Cryptr(process.env.SECRET_KEY);
-    const encryptedEmail = crypter.encrypt(response.email);
+    const encryptedEmail = crypter.encrypt(existingUser.email);
 
     const url = `${process.env.APP_URL}/auth/verify-user/${encryptedEmail}?signature=${randomString}`;
 
@@ -62,7 +49,7 @@ export async function POST(req) {
     const html = render(
       ForgotPasswordEmail({
         params: {
-          name: response?.fullName,
+          name: existingUser?.fullName,
           url: url,
         },
       })
@@ -70,11 +57,18 @@ export async function POST(req) {
 
     // Send Email to User
     const emailSend = await sendEmail(
-      response.email,
+      payload.email,
       "Verification Email",
       html
     );
     console.log("🚀 ~ file: route.js:52 ~ POST ~ emailSend:", emailSend);
+
+    const response = await User.create({
+      fullName: name,
+      userName,
+      email,
+      password: hashedPassword,
+    });
 
     return NextResponse.json(
       { data: response, message: "User Created successfully", status: 201 },

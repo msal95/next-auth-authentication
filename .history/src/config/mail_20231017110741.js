@@ -16,6 +16,12 @@ export const transporter = nodemailer.createTransport({
 
 // send mail with defined transport object
 export const sendEmail = async (to, subject, html) => {
+  console.log(
+    "🚀 ~ file: mail.js:19 ~ sendEmail ~ to, subject, html:",
+    to,
+    subject,
+    html
+  );
   const info = await transporter.sendMail({
     from: process.env.EMAIL_FROM, // sender address
     to: to, // list of receivers

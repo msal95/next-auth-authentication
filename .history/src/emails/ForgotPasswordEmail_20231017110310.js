@@ -7,7 +7,11 @@ import * as React from "react";
 
 export default function ForgotPasswordEmail({ params }) {
   const { name, url } = params;
-
+  console.log(
+    "🚀 ~ file: ForgotPasswordEmail.js:10 ~ ForgotPasswordEmail ~ name, url:",
+    name,
+    url
+  );
   return (
     <Html>
       <Img

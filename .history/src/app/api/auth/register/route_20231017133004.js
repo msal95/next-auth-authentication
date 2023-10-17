@@ -70,7 +70,7 @@ export async function POST(req) {
 
     // Send Email to User
     const emailSend = await sendEmail(
-      response.email,
+      payload.email,
       "Verification Email",
       html
     );

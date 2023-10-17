@@ -4,9 +4,6 @@ import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
 import cryptoRandomString from "crypto-random-string";
 import Cryptr from "cryptr";
-import { render } from "@react-email/render";
-import ForgotPasswordEmail from "@/emails/ForgotPasswordEmail";
-import { sendEmail } from "@/config/mail";
 
 export async function POST(req) {
   try {
@@ -39,42 +36,43 @@ export async function POST(req) {
       email,
       password: hashedPassword,
     });
+    console.log("🚀 ~ file: route.js:41 ~ POST ~ response:", response);
 
-    //   Generate a random String
-    const randomString = cryptoRandomString({
-      length: 64,
-      type: "alphanumeric",
-    });
-    console.log("🚀 ~ file: route.js:38 ~ POST ~ randomString:", randomString);
+    //  //   Generate a random String
+    //  const randomString = cryptoRandomString({
+    //   length: 64,
+    //   type: "alphanumeric",
+    // });
+    // console.log("🚀 ~ file: route.js:38 ~ POST ~ randomString:", randomString);
 
-    response.verifyToken = randomString;
+    // response.verifyToken = randomString;
 
-    await response.save();
+    // await existingUser.save();
 
-    //   Encrypt User Email
-    const crypter = new Cryptr(process.env.SECRET_KEY);
-    const encryptedEmail = crypter.encrypt(response.email);
+    // //   Encrypt User Email
+    // const crypter = new Cryptr(process.env.SECRET_KEY);
+    // const encryptedEmail = crypter.encrypt(existingUser.email);
 
-    const url = `${process.env.APP_URL}/auth/verify-user/${encryptedEmail}?signature=${randomString}`;
+    // const url = `${process.env.APP_URL}/auth/verify-user/${encryptedEmail}?signature=${randomString}`;
 
-    console.log("🚀 ~ file: route.js:44 ~ POST ~ url:", url);
+    // console.log("🚀 ~ file: route.js:44 ~ POST ~ url:", url);
 
-    const html = render(
-      ForgotPasswordEmail({
-        params: {
-          name: response?.fullName,
-          url: url,
-        },
-      })
-    );
+    // const html = render(
+    //   ForgotPasswordEmail({
+    //     params: {
+    //       name: existingUser?.fullName,
+    //       url: url,
+    //     },
+    //   })
+    // );
 
-    // Send Email to User
-    const emailSend = await sendEmail(
-      response.email,
-      "Verification Email",
-      html
-    );
-    console.log("🚀 ~ file: route.js:52 ~ POST ~ emailSend:", emailSend);
+    // // Send Email to User
+    // const emailSend = await sendEmail(
+    //   payload.email,
+    //   "Verification Email",
+    //   html
+    // );
+    // console.log("🚀 ~ file: route.js:52 ~ POST ~ emailSend:", emailSend);
 
     return NextResponse.json(
       { data: response, message: "User Created successfully", status: 201 },
